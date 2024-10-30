@@ -1,25 +1,27 @@
 const puppeteer = require('puppeteer');
 
 (async () => {
-  // Create a browser instance
-  const browser = await puppeteer.launch();
+  try {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.setViewport({
+      width: 1280,
+      height: 720
+    });
+    const website_url = 'https://www.bannerbear.com/blog/how-to-convert-html-into-pdf-with-node-js-and-puppeteer/';
+    await page.goto(website_url, {
+      waitUntil: 'networkidle0'
+    });
+    await page.screenshot({
+      path: 'screenshot.jpg',
+    });
 
-  // Create a new page
-  const page = await browser.newPage();
+    await browser.close();
 
-  // Set viewport width and height
-  await page.setViewport({ width: 1280, height: 720 });
+  } catch (error) {
+    context.error(error);
 
-  const website_url = 'https://www.bannerbear.com/blog/how-to-convert-html-into-pdf-with-node-js-and-puppeteer/';
-
-  // Open URL in current page
-  await page.goto(website_url, { waitUntil: 'networkidle0' });
-
-  // Capture screenshot
-  await page.screenshot({
-    path: 'screenshot.jpg',
-  });
-
-  // Close the browser instance
-  await browser.close();
+  }
 })();
+
+context.log('done');
